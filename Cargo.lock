@@ -2216,14 +2216,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "panel"
-version = "0.1.0"
-dependencies = [
- "iced",
- "iced_layershell",
-]
-
-[[package]]
 name = "parking"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2598,6 +2590,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "shell-panel"
+version = "0.1.0"
+dependencies = [
+ "iced",
+ "iced_layershell",
 ]
 
 [[package]]
