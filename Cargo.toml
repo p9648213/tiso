@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/shells/*",
+  #"crates/apps/*",
+]
+
+[workspace.dependencies]
+iced = "0.14"
+iced_layershell = "0.14.2"
