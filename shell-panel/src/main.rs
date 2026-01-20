@@ -1,43 +1,66 @@
-use iced::widget::container;
 use iced::{Color, Element, Task};
 use iced_layershell::build_pattern::application;
 use iced_layershell::reexport::Anchor;
 use iced_layershell::settings::LayerShellSettings;
 use iced_layershell::to_layer_message;
+use ui_lib::panel::{Panel, PanelMessage};
 
 fn main() -> iced_layershell::Result {
-    application(Panel::new, Panel::namespace, Panel::update, Panel::view)
-        .layer_settings(LayerShellSettings {
-            size: Some((u32::default(), 50)),
-            anchor: Anchor::Top | Anchor::Right | Anchor::Left,
-            margin: (0, 0, 0, 0),
-            exclusive_zone: 50,
-            ..Default::default()
-        })
-        .style(Panel::style)
-        .run()
+    application(
+        PanelShell::new,
+        PanelShell::namespace,
+        PanelShell::update,
+        PanelShell::view,
+    )
+    .layer_settings(LayerShellSettings {
+        size: Some((u32::default(), 50)),
+        anchor: Anchor::Top | Anchor::Right | Anchor::Left,
+        margin: (0, 0, 0, 0),
+        exclusive_zone: 50,
+        ..Default::default()
+    })
+    .style(PanelShell::style)
+    .run()
 }
 
-struct Panel {}
+struct PanelShell {
+    panel: Panel,
+}
 
-#[to_layer_message]
+#[to_layer_message] // Macro is only used here
 #[derive(Debug, Clone)]
-enum Message {}
+enum Message {
+    Panel(PanelMessage),
+}
 
-impl Panel {
+impl PanelShell {
     fn new() -> (Self, Task<Message>) {
-        (Self {}, Task::none())
-    }
-    fn namespace() -> String {
-        String::from("Panel")
+        (
+            Self {
+                panel: Panel::new(),
+            },
+            Task::none(),
+        )
     }
 
-    fn update(&mut self, _message: Message) -> Task<Message> {
-        Task::none()
+    fn namespace() -> String {
+        "ShellApp".into()
+    }
+
+    fn update(&mut self, message: Message) -> Task<Message> {
+        match message {
+            Message::Panel(panel_msg) => match panel_msg {
+                PanelMessage::ChangeTextPressed => {
+                    self.panel.text = "I am a Layer Shell!".to_string();
+                    Task::none()
+                }
+            },
+            _ => Task::none(),
+        }
     }
 
     fn view(&self) -> Element<'_, Message> {
-        container("Hello World").into()
+        self.panel.view().map(Message::Panel)
     }
 
     fn style(&self, theme: &iced::Theme) -> iced::theme::Style {
