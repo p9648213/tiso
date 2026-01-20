@@ -3,13 +3,11 @@ use iced::{
     widget::{button, container, row, text},
 };
 
-// 1. Shared State
 #[derive(Debug, Clone)]
 pub struct Panel {
     pub text: String,
 }
 
-// 2. Shared Events
 #[derive(Debug, Clone)]
 pub enum PanelMessage {
     ChangeTextPressed,
@@ -30,7 +28,7 @@ impl Panel {
 
     pub fn view(&self) -> Element<'_, PanelMessage> {
         container(row![
-            text(&self.text),
+            text(&self.text).size(20),
             button("Click Me").on_press(PanelMessage::ChangeTextPressed)
         ])
         .into()

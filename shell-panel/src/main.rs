@@ -27,7 +27,7 @@ struct PanelShell {
     panel: Panel,
 }
 
-#[to_layer_message] // Macro is only used here
+#[to_layer_message]
 #[derive(Debug, Clone)]
 enum Message {
     Panel(PanelMessage),

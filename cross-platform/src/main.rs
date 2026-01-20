@@ -1,8 +1,17 @@
-use iced::{Background, Color, Element, Length, Task, application, widget::container};
+use iced::{
+    Background, Color, Element, Font, Length, Task, application, widget::container
+};
 use ui_lib::panel::{Panel, PanelMessage};
 
+const MIRA_FONT: Font = Font::with_name("Miracode"); 
+
 fn main() -> iced::Result {
-    application(App::new, App::update, App::view).run()
+    application(App::new, App::update, App::view)
+        .title("Bury")
+        .font(include_bytes!("../../assets/font/Miracode.ttf").as_slice())
+        .default_font(MIRA_FONT)
+        .centered()
+        .run()
 }
 
 struct App {
