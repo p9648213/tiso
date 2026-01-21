@@ -1,5 +1,5 @@
 use iced::{
-    Background, Color, ContentFit, Element, Font, Length, Task, application,
+    Background, Color, ContentFit, Element, Font, Length, Subscription, Task, application,
     widget::{container, image, stack},
 };
 use ui_lib::panel::{Panel, PanelMessage};
@@ -12,11 +12,13 @@ fn main() -> iced::Result {
         .font(include_bytes!("../../assets/font/Miracode.ttf").as_slice())
         .default_font(MIRA_FONT)
         .centered()
+        .subscription(App::subscription)
         .run()
 }
 
 struct App {
     panel: Panel,
+    background: image::Handle,
 }
 
 #[derive(Debug, Clone)]
@@ -29,6 +31,9 @@ impl App {
         (
             Self {
                 panel: Panel::new(),
+                background: image::Handle::from_bytes(
+                    include_bytes!("../../assets/images/background.jpg").as_slice(),
+                ),
             },
             Task::none(),
         )
@@ -37,16 +42,20 @@ impl App {
     fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Panel(panel_msg) => match panel_msg {
-                PanelMessage::ChangeTextPressed => {
-                    self.panel.text = "I am a Normal Window!".to_string();
+                PanelMessage::TimeTick(local_time) => {
+                    self.panel.current_time = local_time;
                     Task::none()
                 }
             },
         }
     }
 
+    fn subscription(&self) -> Subscription<Message> {
+        self.panel.subscription().map(Message::Panel)
+    }
+
     fn view(&self) -> Element<'_, Message> {
-        let background = image("../assets/images/background.jpg")
+        let background = image(&self.background)
             .width(Length::Fill)
             .height(Length::Fill)
             .content_fit(ContentFit::Fill);

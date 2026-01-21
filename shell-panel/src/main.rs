@@ -1,4 +1,4 @@
-use iced::{Color, Element, Task};
+use iced::{Color, Element, Subscription, Task};
 use iced_layershell::build_pattern::application;
 use iced_layershell::reexport::Anchor;
 use iced_layershell::settings::LayerShellSettings;
@@ -20,6 +20,7 @@ fn main() -> iced_layershell::Result {
         ..Default::default()
     })
     .style(PanelShell::style)
+    .subscription(PanelShell::subscription)
     .run()
 }
 
@@ -50,8 +51,8 @@ impl PanelShell {
     fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Panel(panel_msg) => match panel_msg {
-                PanelMessage::ChangeTextPressed => {
-                    self.panel.text = "I am a Layer Shell!".to_string();
+                PanelMessage::TimeTick(local_time) => {
+                    self.panel.current_time = local_time;
                     Task::none()
                 }
             },
@@ -59,8 +60,8 @@ impl PanelShell {
         }
     }
 
-    fn view(&self) -> Element<'_, Message> {
-        self.panel.view().map(Message::Panel)
+    fn subscription(&self) -> Subscription<Message> {
+        self.panel.subscription().map(Message::Panel)
     }
 
     fn style(&self, theme: &iced::Theme) -> iced::theme::Style {
@@ -69,5 +70,9 @@ impl PanelShell {
             background_color: Color::WHITE,
             text_color: theme.palette().text,
         }
+    }
+
+    fn view(&self) -> Element<'_, Message> {
+        self.panel.view().map(Message::Panel)
     }
 }

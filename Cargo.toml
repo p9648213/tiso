@@ -5,3 +5,4 @@ members = ["cross-platform", "shell-panel", "ui-lib"]
 [workspace.dependencies]
 iced = "0.14"
 iced_layershell = "0.14.2"
+chrono = "0.4.43"
