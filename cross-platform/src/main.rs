@@ -1,8 +1,12 @@
 use iced::{
-    Background, Color, ContentFit, Element, Font, Length, Subscription, Task, application,
-    widget::{container, image, stack},
+    Background, Color, ContentFit, Element, Font, Length, Subscription, Task,
+    application,
+    widget::{column, container, image, stack, text},
 };
-use ui_lib::panel::{Panel, PanelMessage};
+use ui_lib::{
+    dock::{Dock, DockMessage},
+    panel::{Panel, PanelMessage},
+};
 
 const MIRA_FONT: Font = Font::with_name("Miracode");
 
@@ -18,12 +22,14 @@ fn main() -> iced::Result {
 
 struct App {
     panel: Panel,
+    dock: Dock,
     background: image::Handle,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
     Panel(PanelMessage),
+    Dock(DockMessage),
 }
 
 impl App {
@@ -31,6 +37,7 @@ impl App {
         (
             Self {
                 panel: Panel::new(),
+                dock: Dock::new(),
                 background: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/background.jpg").as_slice(),
                 ),
@@ -69,7 +76,11 @@ impl App {
                 ..Default::default()
             });
 
-        stack![background, panel]
+        let compositor = container(text("Compositor")).center(Length::Fill);
+
+        let dock_overlay = self.dock.view().map(Message::Dock);
+
+        stack![background, column![panel, compositor], dock_overlay]
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
