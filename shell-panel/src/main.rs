@@ -1,4 +1,4 @@
-use iced::{Color, Element, Subscription, Task};
+use iced::{Color, Element, Length, Subscription, Task, theme::Style, widget::container};
 use iced_layershell::build_pattern::application;
 use iced_layershell::reexport::Anchor;
 use iced_layershell::settings::LayerShellSettings;
@@ -19,7 +19,10 @@ fn main() -> iced_layershell::Result {
         exclusive_zone: 50,
         ..Default::default()
     })
-    .style(PanelShell::style)
+    .style(|_, _| Style {
+        background_color: Color::TRANSPARENT,
+        text_color: Color::WHITE,
+    })
     .subscription(PanelShell::subscription)
     .run()
 }
@@ -45,7 +48,7 @@ impl PanelShell {
     }
 
     fn namespace() -> String {
-        "ShellApp".into()
+        "panel".into()
     }
 
     fn update(&mut self, message: Message) -> Task<Message> {
@@ -64,15 +67,9 @@ impl PanelShell {
         self.panel.subscription().map(Message::Panel)
     }
 
-    fn style(&self, theme: &iced::Theme) -> iced::theme::Style {
-        use iced::theme::Style;
-        Style {
-            background_color: Color::WHITE,
-            text_color: theme.palette().text,
-        }
-    }
-
     fn view(&self) -> Element<'_, Message> {
-        self.panel.view().map(Message::Panel)
+        container(self.panel.view().map(Message::Panel))
+            .center_y(Length::Fill)
+            .into()
     }
 }

@@ -1,5 +1,6 @@
 use iced::{
     Background, Color, ContentFit, Element, Font, Length, Subscription, Task,
+    alignment::{Horizontal, Vertical},
     application,
     widget::{column, container, image, stack, text},
 };
@@ -78,7 +79,14 @@ impl App {
 
         let compositor = container(text("Compositor")).center(Length::Fill);
 
-        let dock_overlay = self.dock.view().map(Message::Dock);
+        let dock = self.dock.view().map(Message::Dock);
+
+        let dock_overlay = container(dock)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .align_x(Horizontal::Center)
+            .align_y(Vertical::Bottom)
+            .padding(12);
 
         stack![background, column![panel, compositor], dock_overlay]
             .width(Length::Fill)

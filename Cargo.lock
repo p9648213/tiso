@@ -3263,6 +3263,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "shell-dock"
+version = "0.1.0"
+dependencies = [
+ "iced",
+ "iced_layershell",
+ "ui-lib",
+]
+
+[[package]]
 name = "shell-panel"
 version = "0.1.0"
 dependencies = [

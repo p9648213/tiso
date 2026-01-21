@@ -1,6 +1,5 @@
 use iced::{
     Background, Border, Color, ContentFit, Element, Length, Padding,
-    alignment::{Horizontal, Vertical},
     border::Radius,
     widget::{button, container, image, row, text, tooltip},
 };
@@ -74,7 +73,7 @@ impl Dock {
         }))
         .spacing(20);
 
-        let content = container(dock_items)
+        container(dock_items)
             .padding(Padding {
                 right: 12.0,
                 left: 12.0,
@@ -82,7 +81,7 @@ impl Dock {
                 top: 4.0,
             })
             .style(|_| container::Style {
-                background: Some(Background::Color(Color::from_rgba(0.0, 0.0, 0.0, 0.6))),
+                background: Some(Background::Color(Color::from_rgba(0.0, 0.0, 0.0, 0.5))),
                 border: Border {
                     color: Color::from_rgba(1.0, 1.0, 1.0, 0.1),
                     width: 1.0,
@@ -91,14 +90,7 @@ impl Dock {
                 ..Default::default()
             })
             .width(Length::Shrink)
-            .height(Length::Shrink);
-
-        container(content)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .align_x(Horizontal::Center)
-            .align_y(Vertical::Bottom)
-            .padding(12)
+            .height(Length::Shrink)
             .into()
     }
 }
