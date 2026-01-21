@@ -1,9 +1,10 @@
 use iced::{
-    Background, Color, Element, Font, Length, Task, application, widget::container
+    Background, Color, ContentFit, Element, Font, Length, Task, application,
+    widget::{container, image, stack},
 };
 use ui_lib::panel::{Panel, PanelMessage};
 
-const MIRA_FONT: Font = Font::with_name("Miracode"); 
+const MIRA_FONT: Font = Font::with_name("Miracode");
 
 fn main() -> iced::Result {
     application(App::new, App::update, App::view)
@@ -45,14 +46,23 @@ impl App {
     }
 
     fn view(&self) -> Element<'_, Message> {
-        container(self.panel.view().map(Message::Panel))
-            .height(50)
+        let background = image("../assets/images/background.jpg")
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .content_fit(ContentFit::Fill);
+
+        let panel = container(self.panel.view().map(Message::Panel))
+            .center_y(44)
             .width(Length::Fill)
             .style(|_| container::Style {
-                background: Some(Background::Color(Color::BLACK)),
+                background: Some(Background::Color(Color::from_rgba(0.0, 0.0, 0.0, 0.6))),
                 text_color: Some(Color::WHITE),
                 ..Default::default()
-            })
+            });
+
+        stack![background, panel]
+            .width(Length::Fill)
+            .height(Length::Fill)
             .into()
     }
 }
