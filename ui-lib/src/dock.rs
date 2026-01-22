@@ -1,12 +1,13 @@
 use iced::{
     Background, Border, Color, ContentFit, Element, Length, Padding,
     border::Radius,
-    widget::{button, container, image, row, text, tooltip},
+    widget::{MouseArea, button, container, image, row, text, tooltip},
 };
 
 #[derive(Debug, Clone)]
 pub struct Dock {
     items: Vec<DockItem>,
+    pub is_hovered: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -16,7 +17,10 @@ struct DockItem {
 }
 
 #[derive(Debug, Clone)]
-pub enum DockMessage {}
+pub enum DockMessage {
+    MouseEnter,
+    MouseLeave,
+}
 
 impl Default for Dock {
     fn default() -> Self {
@@ -53,10 +57,13 @@ impl Dock {
             },
         ];
 
-        Self { items }
+        Self {
+            items,
+            is_hovered: false,
+        }
     }
 
-    pub fn view(&self) -> Element<'_, DockMessage> {
+    pub fn view(&self, window_height: f32) -> Element<'_, DockMessage> {
         let dock_items = row(self.items.iter().map(|item| {
             tooltip(
                 button(
@@ -73,7 +80,7 @@ impl Dock {
         }))
         .spacing(20);
 
-        container(dock_items)
+        let dock = container(dock_items)
             .padding(Padding {
                 right: 12.0,
                 left: 12.0,
@@ -90,7 +97,19 @@ impl Dock {
                 ..Default::default()
             })
             .width(Length::Shrink)
-            .height(Length::Shrink)
+            .height(Length::Shrink);
+
+        let dock_container = container(dock).center_x(Length::Fill).padding(Padding {
+            top: if self.is_hovered { 0.0 } else { window_height },
+            bottom: 12.0,
+            ..Default::default()
+        });
+
+        let dock_overlay = container(dock_container).width(Length::Fill).height(68);
+
+        MouseArea::new(dock_overlay)
+            .on_enter(DockMessage::MouseEnter)
+            .on_exit(DockMessage::MouseLeave)
             .into()
     }
 }

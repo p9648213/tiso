@@ -1,8 +1,6 @@
 use iced::{
-    Background, Color, ContentFit, Element, Font, Length, Padding, Size, Subscription, Task,
-    alignment::{Horizontal, Vertical},
-    application,
-    widget::{MouseArea, Space, column, container, image, stack, text},
+    Background, Color, ContentFit, Element, Font, Length, Size, Subscription, Task, application,
+    widget::{Space, column, container, image, stack, text},
     window,
 };
 use ui_lib::{
@@ -25,7 +23,6 @@ fn main() -> iced::Result {
 struct App {
     panel: Panel,
     dock: Dock,
-    dock_hovered: bool,
     background: image::Handle,
     window_size: Size,
 }
@@ -34,8 +31,6 @@ struct App {
 enum Message {
     Panel(PanelMessage),
     Dock(DockMessage),
-    DockMouseEnter,
-    DockMouseLeave,
     WindowSize(Size),
 }
 
@@ -45,7 +40,6 @@ impl App {
             Self {
                 panel: Panel::new(),
                 dock: Dock::new(),
-                dock_hovered: false,
                 background: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/background.jpg").as_slice(),
                 ),
@@ -65,16 +59,16 @@ impl App {
                     Task::none()
                 }
             },
-            Message::DockMouseEnter => {
-                println!("Mouse Enter");
-                self.dock_hovered = true;
-                Task::none()
-            }
-            Message::DockMouseLeave => {
-                println!("Mouse Lever");
-                self.dock_hovered = false;
-                Task::none()
-            }
+            Message::Dock(dock_msg) => match dock_msg {
+                DockMessage::MouseEnter => {
+                    self.dock.is_hovered = true;
+                    Task::none()
+                }
+                DockMessage::MouseLeave => {
+                    self.dock.is_hovered = false;
+                    Task::none()
+                }
+            },
             Message::WindowSize(size) => {
                 self.window_size = size;
                 Task::none()
@@ -103,24 +97,11 @@ impl App {
 
         let compositor = container(text("Compositor")).center(Length::Fill);
 
-        let dock = self.dock.view().map(Message::Dock);
+        let dock = self.dock.view(self.window_size.height).map(Message::Dock);
 
-        let docker_container = container(dock).center_x(Length::Fill).padding(Padding {
-            top: 0.0,
-            bottom: 12.0,
-            ..Default::default()
-        });
+        let dock_overlay = column![Space::new().height(Length::Fill), dock];
 
-        let dock_overlay = container(docker_container).width(Length::Fill).height(68);
-
-        let dock_overlay_mouse_area = MouseArea::new(dock_overlay)
-            .on_enter(Message::DockMouseEnter)
-            .on_exit(Message::DockMouseLeave);
-
-        let dock_overlay_wrapper =
-            column![Space::new().height(Length::Fill), dock_overlay_mouse_area];
-
-        stack![background, column![panel, compositor], dock_overlay_wrapper]
+        stack![background, column![panel, compositor], dock_overlay]
             .width(Length::Fill)
             .height(Length::Fill)
             .into()

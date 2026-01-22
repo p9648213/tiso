@@ -46,12 +46,24 @@ impl DockShell {
         "dock".into()
     }
 
-    fn update(&mut self, _message: Message) -> Task<Message> {
-        Task::none()
+    fn update(&mut self, message: Message) -> Task<Message> {
+        match message {
+            Message::Dock(dock_msg) => match dock_msg {
+                DockMessage::MouseEnter => {
+                    self.dock.is_hovered = true;
+                    Task::none()
+                }
+                DockMessage::MouseLeave => {
+                    self.dock.is_hovered = false;
+                    Task::none()
+                }
+            },
+            _ => Task::none(),
+        }
     }
 
     fn view(&self) -> Element<'_, Message> {
-        let dock = self.dock.view().map(Message::Dock);
+        let dock = self.dock.view(0.0).map(Message::Dock);
         container(dock)
             .height(Length::Fill)
             .align_y(Vertical::Bottom)
