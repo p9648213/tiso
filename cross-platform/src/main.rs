@@ -68,6 +68,7 @@ impl App {
                     self.dock.is_hovered = false;
                     Task::none()
                 }
+                _ => Task::none(),
             },
             Message::WindowSize(size) => {
                 self.window_size = size;

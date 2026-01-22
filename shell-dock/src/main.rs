@@ -57,6 +57,7 @@ impl DockShell {
                     self.dock.is_hovered = false;
                     Task::none()
                 }
+                _ => Task::none(),
             },
             _ => Task::none(),
         }

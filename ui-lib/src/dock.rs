@@ -20,6 +20,7 @@ struct DockItem {
 pub enum DockMessage {
     MouseEnter,
     MouseLeave,
+    Open(String),
 }
 
 impl Default for Dock {
@@ -72,7 +73,8 @@ impl Dock {
                         .height(48)
                         .content_fit(ContentFit::Fill),
                 )
-                .style(button::text),
+                .style(button::text)
+                .on_press(DockMessage::Open(item.name.clone())),
                 text(&item.name).size(20).color(Color::WHITE),
                 tooltip::Position::Top,
             )
