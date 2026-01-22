@@ -1,9 +1,10 @@
 use iced::{
     Background, Color, ContentFit, Element, Font, Length, Size, Subscription, Task, application,
-    widget::{Space, column, container, image, stack, text},
+    widget::{Space, column, container, image, stack},
     window,
 };
 use ui_lib::{
+    compositor::{Compositor, CompositorMessage},
     dock::{Dock, DockMessage},
     panel::{Panel, PanelMessage},
 };
@@ -23,6 +24,7 @@ fn main() -> iced::Result {
 struct App {
     panel: Panel,
     dock: Dock,
+    compositor: Compositor,
     background: image::Handle,
     window_size: Size,
 }
@@ -31,6 +33,7 @@ struct App {
 enum Message {
     Panel(PanelMessage),
     Dock(DockMessage),
+    Compositor(CompositorMessage),
     WindowSize(Size),
 }
 
@@ -40,6 +43,7 @@ impl App {
             Self {
                 panel: Panel::new(),
                 dock: Dock::new(),
+                compositor: Compositor::new(),
                 background: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/background.jpg").as_slice(),
                 ),
@@ -68,7 +72,10 @@ impl App {
                     self.dock.is_hovered = false;
                     Task::none()
                 }
-                _ => Task::none(),
+                DockMessage::AppClick(app) => {
+                    self.compositor.open_apps.push(app);
+                    Task::none()
+                }
             },
             Message::WindowSize(size) => {
                 self.window_size = size;
@@ -96,7 +103,8 @@ impl App {
                 ..Default::default()
             });
 
-        let compositor = container(text("Compositor")).center(Length::Fill);
+        let compositor =
+            container(self.compositor.view().map(Message::Compositor)).center(Length::Fill);
 
         let dock = self.dock.view(self.window_size.height).map(Message::Dock);
 

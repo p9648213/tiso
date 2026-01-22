@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 iced = { workspace = true, features = ["image", "web-colors", "webgl"] }
 ui-lib = { path = "../ui-lib/" }
+app-file-manager = { path = "../app-file-manager/" }

@@ -1,6 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["cross-platform", "shell-dock", "shell-panel", "ui-lib"]
+members = [
+  "app-file-manager",
+  "cross-platform",
+  "shell-dock",
+  "shell-panel",
+  "ui-lib",
+]
 
 [workspace.dependencies]
 iced = "0.14"

@@ -4,23 +4,19 @@ use iced::{
     widget::{MouseArea, button, container, image, row, text, tooltip},
 };
 
-#[derive(Debug, Clone)]
-pub struct Dock {
-    items: Vec<DockItem>,
-    pub is_hovered: bool,
-}
+use crate::{ApplicationItem, ApplicationType};
 
 #[derive(Debug, Clone)]
-struct DockItem {
-    name: String,
-    icon: image::Handle,
+pub struct Dock {
+    items: Vec<ApplicationItem>,
+    pub is_hovered: bool,
 }
 
 #[derive(Debug, Clone)]
 pub enum DockMessage {
     MouseEnter,
     MouseLeave,
-    Open(String),
+    AppClick(ApplicationItem),
 }
 
 impl Default for Dock {
@@ -32,29 +28,33 @@ impl Default for Dock {
 impl Dock {
     pub fn new() -> Self {
         let items = vec![
-            DockItem {
+            ApplicationItem {
                 name: "Terminal".to_string(),
                 icon: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/terminal.png").as_slice(),
                 ),
+                app_type: ApplicationType::Terminal,
             },
-            DockItem {
+            ApplicationItem {
                 name: "Firefox".to_string(),
                 icon: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/firefox.png").as_slice(),
                 ),
+                app_type: ApplicationType::FireFox,
             },
-            DockItem {
-                name: "Files".to_string(),
+            ApplicationItem {
+                name: "Files Manager".to_string(),
                 icon: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/files.png").as_slice(),
                 ),
+                app_type: ApplicationType::FilesManager,
             },
-            DockItem {
+            ApplicationItem {
                 name: "Steam".to_string(),
                 icon: image::Handle::from_bytes(
                     include_bytes!("../../assets/images/steam.png").as_slice(),
                 ),
+                app_type: ApplicationType::Steam,
             },
         ];
 
@@ -74,7 +74,7 @@ impl Dock {
                         .content_fit(ContentFit::Fill),
                 )
                 .style(button::text)
-                .on_press(DockMessage::Open(item.name.clone())),
+                .on_press(DockMessage::AppClick(item.clone())),
                 text(&item.name).size(20).color(Color::WHITE),
                 tooltip::Position::Top,
             )
