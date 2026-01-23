@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-  "app-file-manager",
+  "app-file-manager", "app-game-engine",
   "cross-platform",
   "shell-dock",
   "shell-panel",
