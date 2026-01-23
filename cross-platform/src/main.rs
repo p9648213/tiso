@@ -1,7 +1,7 @@
 use iced::{
     Background, Color, ContentFit, Element, Font, Length, Size, Subscription, Task, application,
     widget::{Space, column, container, image, stack},
-    window,
+    window::{self, Settings},
 };
 use ui_lib::{
     compositor::{Compositor, CompositorMessage},
@@ -17,6 +17,10 @@ fn main() -> iced::Result {
         .font(include_bytes!("../../assets/font/Miracode.ttf").as_slice())
         .default_font(MIRA_FONT)
         .centered()
+        .window(Settings {
+            fullscreen: true,
+            ..Default::default()
+        })
         .subscription(App::subscription)
         .run()
 }
@@ -103,8 +107,12 @@ impl App {
                 ..Default::default()
             });
 
-        let compositor =
-            container(self.compositor.view().map(Message::Compositor)).center(Length::Fill);
+        let compositor = container(
+            self.compositor
+                .view(self.window_size)
+                .map(Message::Compositor),
+        )
+        .center(Length::Fill);
 
         let dock = self.dock.view(self.window_size.height).map(Message::Dock);
 

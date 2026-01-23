@@ -1,5 +1,5 @@
 use iced::{
-    Element, Length,
+    Background, Color, Element, Length,
     widget::{container, text},
 };
 
@@ -15,6 +15,13 @@ impl FileManager {
     }
 
     pub fn view(&self) -> Element<'_, FileManagerMessage> {
-        container(text("File Manager!")).center(Length::Fill).into()
+        container(text("File Manager!"))
+            .center(Length::Fill)
+            .style(|_| container::Style {
+                background: Some(Background::Color(Color::WHITE)),
+                text_color: Some(Color::BLACK),
+                ..Default::default()
+            })
+            .into()
     }
 }
