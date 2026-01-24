@@ -6,7 +6,7 @@ use iced::{
     widget::{container, row, text},
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Panel {
     pub current_time: DateTime<Local>,
 }
@@ -14,12 +14,6 @@ pub struct Panel {
 #[derive(Debug, Clone)]
 pub enum PanelMessage {
     TimeTick(DateTime<Local>),
-}
-
-impl Default for Panel {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 
 impl Panel {

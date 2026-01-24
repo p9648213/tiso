@@ -4,9 +4,9 @@ use iced::{
     widget::{MouseArea, button, container, image, row, text, tooltip},
 };
 
-use crate::{ApplicationItem, ApplicationType};
+use so_base::{ApplicationItem, ApplicationType};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Dock {
     items: Vec<ApplicationItem>,
     pub is_hovered: bool,
@@ -17,12 +17,6 @@ pub enum DockMessage {
     MouseEnter,
     MouseLeave,
     AppClick(ApplicationItem),
-}
-
-impl Default for Dock {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 
 impl Dock {

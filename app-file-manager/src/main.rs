@@ -1,32 +1,34 @@
-use app_file_manager::{FileManager, FileManagerMessage};
+use app_file_manager::{FilesManager, FilesManagerMessage};
 use iced::{Task, application};
+use so_base::{MIRA_FONT_BYTES, MIRA_FONT_NAME};
 
 fn main() -> iced::Result {
     application(
-        FileManagerApp::new,
-        FileManagerApp::update,
-        FileManagerApp::view,
+        FilesManagerApp::new,
+        FilesManagerApp::update,
+        FilesManagerApp::view,
     )
+    .font(MIRA_FONT_BYTES)
+    .default_font(MIRA_FONT_NAME)
     .title("File Manager")
     .centered()
     .run()
 }
 
 #[derive(Debug)]
-struct FileManagerApp {
-    file_manager: FileManager,
+struct FilesManagerApp {
+    files_manager: FilesManager,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Message {
-    FileManager(FileManagerMessage),
+    FilesManager(FilesManagerMessage),
 }
 
-impl FileManagerApp {
-    fn new() -> Self {
-        Self {
-            file_manager: FileManager::new(),
-        }
+impl FilesManagerApp {
+    fn new() -> (Self, Task<Message>) {
+        let (files_manager, fm_task) = FilesManager::new();
+        (Self { files_manager }, fm_task.map(Message::FilesManager))
     }
 
     fn update(&mut self, _message: Message) -> Task<Message> {
@@ -34,6 +36,6 @@ impl FileManagerApp {
     }
 
     fn view(&self) -> iced::Element<'_, Message> {
-        self.file_manager.view().map(Message::FileManager)
+        self.files_manager.view().map(Message::FilesManager)
     }
 }

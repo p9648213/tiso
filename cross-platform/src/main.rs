@@ -1,21 +1,20 @@
 use iced::{
-    Background, Color, ContentFit, Element, Font, Length, Size, Subscription, Task, application,
+    Background, Color, ContentFit, Element, Length, Size, Subscription, Task, application,
     widget::{Space, column, container, image, stack},
     window::{self, Settings},
 };
-use ui_lib::{
+use so_base::{MIRA_FONT_BYTES, MIRA_FONT_NAME};
+use so_core::{
     compositor::{Compositor, CompositorMessage},
     dock::{Dock, DockMessage},
     panel::{Panel, PanelMessage},
 };
 
-const MIRA_FONT: Font = Font::with_name("Miracode");
-
 fn main() -> iced::Result {
     application(App::new, App::update, App::view)
         .title("Bury")
-        .font(include_bytes!("../../assets/font/Miracode.ttf").as_slice())
-        .default_font(MIRA_FONT)
+        .font(MIRA_FONT_BYTES)
+        .default_font(MIRA_FONT_NAME)
         .centered()
         .window(Settings {
             fullscreen: true,
@@ -25,6 +24,7 @@ fn main() -> iced::Result {
         .run()
 }
 
+#[derive(Debug)]
 struct App {
     panel: Panel,
     dock: Dock,
@@ -33,7 +33,7 @@ struct App {
     window_size: Size,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 enum Message {
     Panel(PanelMessage),
     Dock(DockMessage),
@@ -76,10 +76,13 @@ impl App {
                     self.dock.is_hovered = false;
                     Task::none()
                 }
-                DockMessage::AppClick(app) => {
-                    self.compositor.open_apps.push(app);
-                    Task::none()
-                }
+                DockMessage::AppClick(app) => self
+                    .compositor
+                    .update(CompositorMessage::OpenApplication(app))
+                    .map(Message::Compositor),
+            },
+            Message::Compositor(compositor_msg) => match compositor_msg {
+                _ => Task::none(),
             },
             Message::WindowSize(size) => {
                 self.window_size = size;

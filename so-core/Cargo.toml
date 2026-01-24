@@ -1,5 +1,5 @@
 [package]
-name = "ui-lib"
+name = "so-core"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,3 +7,4 @@ edition = "2024"
 iced = { workspace = true, features = ["tokio", "image"] }
 chrono = { workspace = true }
 app-file-manager = { path = "../app-file-manager/" }
+so-base = { path = "../so-base/" }

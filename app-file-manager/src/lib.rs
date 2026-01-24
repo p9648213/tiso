@@ -1,20 +1,29 @@
 use iced::{
-    Background, Color, Element, Length,
+    Background, Color, Element, Length, Task,
     widget::{container, text},
 };
 
-#[derive(Debug, Clone)]
-pub struct FileManager {}
+#[derive(Debug)]
+pub struct FilesManager {
+    current_dir: String,
+}
 
 #[derive(Debug, Clone)]
-pub enum FileManagerMessage {}
+pub enum FilesManagerMessage {
+    FolderRead(String),
+}
 
-impl FileManager {
-    pub fn new() -> Self {
-        Self {}
+impl FilesManager {
+    pub fn new() -> (Self, Task<FilesManagerMessage>) {
+        (
+            Self {
+                current_dir: "/".to_string(),
+            },
+            Task::none(),
+        )
     }
 
-    pub fn view(&self) -> Element<'_, FileManagerMessage> {
+    pub fn view(&self) -> Element<'_, FilesManagerMessage> {
         container(text("File Manager!"))
             .center(Length::Fill)
             .style(|_| container::Style {
@@ -24,4 +33,8 @@ impl FileManager {
             })
             .into()
     }
+}
+
+pub async fn read_folder() {
+    ()
 }

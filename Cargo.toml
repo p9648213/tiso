@@ -1,14 +1,17 @@
 [workspace]
 resolver = "2"
 members = [
-  "app-file-manager", "app-game-engine",
+  "app-file-manager",
+  "app-game-engine",
   "cross-platform",
   "shell-dock",
   "shell-panel",
-  "ui-lib",
+  "so-base",
+  "so-core",
 ]
 
 [workspace.dependencies]
 iced = "0.14"
 iced_layershell = "0.14.2"
 chrono = "0.4.43"
+tokio = "1.49.0"

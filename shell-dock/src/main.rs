@@ -5,7 +5,8 @@ use iced::{Color, Element, Length, Task};
 use iced_layershell::settings::LayerShellSettings;
 use iced_layershell::to_layer_message;
 use iced_layershell::{build_pattern::application, reexport::Layer};
-use ui_lib::dock::{Dock, DockMessage};
+use so_base::{MIRA_FONT_BYTES, MIRA_FONT_NAME};
+use so_core::dock::{Dock, DockMessage};
 
 fn main() -> iced_layershell::Result {
     application(
@@ -20,6 +21,8 @@ fn main() -> iced_layershell::Result {
         margin: (0, 0, 12, 0),
         ..Default::default()
     })
+    .font(MIRA_FONT_BYTES)
+    .default_font(MIRA_FONT_NAME)
     .style(|_, _| Style {
         background_color: Color::TRANSPARENT,
         text_color: Color::default(),
@@ -64,7 +67,7 @@ impl DockShell {
     }
 
     fn view(&self) -> Element<'_, Message> {
-        let dock = self.dock.view(0.0).map(Message::Dock);
+        let dock = self.dock.view(100.0).map(Message::Dock);
         container(dock)
             .height(Length::Fill)
             .align_y(Vertical::Bottom)

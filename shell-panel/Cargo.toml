@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 iced = { workspace = true }
 iced_layershell = { workspace = true }
-ui-lib = { path = "../ui-lib/" }
+so-core = { path = "../so-core/" }
+so-base = { path = "../so-base/" }

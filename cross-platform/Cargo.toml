@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 iced = { workspace = true, features = ["image", "web-colors", "webgl"] }
-ui-lib = { path = "../ui-lib/" }
+so-core = { path = "../so-core/" }
+so-base = { path = "../so-base/" }
