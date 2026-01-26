@@ -37,21 +37,18 @@ impl Compositor {
 
                 self.opening_apps.push((self.app_id, app_item.clone()));
 
-                let mut command = Task::none();
+                let mut task = Task::none();
 
-                match app_item.app_type {
-                    ApplicationType::FilesManager => {
-                        let (files_manager, fm_task) = FilesManager::new();
-                        self.files_manager.insert(self.app_id, files_manager);
-                        command = fm_task
-                            .map(move |msg| CompositorMessage::FilesManager(current_id, msg));
-                    }
-                    _ => {}
+                if let ApplicationType::FilesManager = app_item.app_type {
+                    let (files_manager, fm_task) = FilesManager::new();
+                    self.files_manager.insert(self.app_id, files_manager);
+                    task = fm_task
+                        .map(move |msg| CompositorMessage::FilesManager(current_id, msg));
                 }
 
                 self.app_id += 1;
 
-                command
+                task
             }
             CompositorMessage::FilesManager(id, fm_msg) => {
                 if let Some(fm) = self.files_manager.get_mut(&id) {
@@ -105,5 +102,11 @@ impl Compositor {
         .horizontal();
 
         container(windows).into()
+    }
+}
+
+impl Default for Compositor {
+    fn default() -> Self {
+        Self::new()
     }
 }

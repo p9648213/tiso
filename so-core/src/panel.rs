@@ -36,6 +36,12 @@ impl Panel {
     }
 }
 
+impl Default for Panel {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 fn datetime<'a>(time: &DateTime<Local>) -> Element<'a, PanelMessage> {
     let formatted_time = time.format("%a %d %b %T").to_string();
 

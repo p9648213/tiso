@@ -109,3 +109,9 @@ impl Dock {
             .into()
     }
 }
+
+impl Default for Dock {
+    fn default() -> Self {
+        Self::new()
+    }
+}

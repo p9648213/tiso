@@ -74,7 +74,7 @@ impl FilesManager {
                 FileType::Symlink => "🔗",
                 FileType::Unknown => "❓",
             };
-            text(format!("{} {}", icon, file.file_name)).into()
+            text(format!("{} {} {}", icon, file.file_name, file.file_path)).into()
         }))
         .spacing(5);
 
