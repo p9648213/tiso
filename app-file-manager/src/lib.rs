@@ -103,7 +103,7 @@ pub async fn read_dir(path: &str) -> Result<Vec<File>, String> {
     let mut dir = tokio::fs::read_dir(path)
         .await
         .map_err(|e| format!("Failed to read directory: {}", e))?;
- 
+
     let mut files = vec![];
 
     while let Ok(Some(entry)) = dir.next_entry().await {

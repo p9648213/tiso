@@ -17,7 +17,7 @@ pub struct Compositor {
 
 #[derive(Debug, Clone)]
 pub enum CompositorMessage {
-    FilesManager(FilesManagerMessage),
+    FilesManager(u32, FilesManagerMessage),
     OpenApplication(ApplicationItem),
 }
 
@@ -33,21 +33,34 @@ impl Compositor {
     pub fn update(&mut self, message: CompositorMessage) -> Task<CompositorMessage> {
         match message {
             CompositorMessage::OpenApplication(app_item) => {
+                let current_id = self.app_id;
+
                 self.opening_apps.push((self.app_id, app_item.clone()));
+
+                let mut command = Task::none();
 
                 match app_item.app_type {
                     ApplicationType::FilesManager => {
-                        let (files_manager, _) = FilesManager::new();
+                        let (files_manager, fm_task) = FilesManager::new();
                         self.files_manager.insert(self.app_id, files_manager);
+                        command = fm_task
+                            .map(move |msg| CompositorMessage::FilesManager(current_id, msg));
                     }
                     _ => {}
                 }
 
                 self.app_id += 1;
 
-                Task::none()
+                command
             }
-            _ => Task::none(),
+            CompositorMessage::FilesManager(id, fm_msg) => {
+                if let Some(fm) = self.files_manager.get_mut(&id) {
+                    fm.update(fm_msg)
+                        .map(move |msg| CompositorMessage::FilesManager(id, msg))
+                } else {
+                    Task::none()
+                }
+            }
         }
     }
 
@@ -69,7 +82,9 @@ impl Compositor {
                                         )),
                                         ..Default::default()
                                     }),
-                                files_manager.view().map(CompositorMessage::FilesManager)
+                                files_manager
+                                    .view()
+                                    .map(move |msg| CompositorMessage::FilesManager(*app_id, msg))
                             ])
                             .width((widown_size.width - 12.0) / 2.0)
                             .height(widown_size.height / 1.3)

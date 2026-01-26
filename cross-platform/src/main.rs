@@ -81,9 +81,10 @@ impl App {
                     .update(CompositorMessage::OpenApplication(app))
                     .map(Message::Compositor),
             },
-            Message::Compositor(compositor_msg) => match compositor_msg {
-                _ => Task::none(),
-            },
+            Message::Compositor(compositor_msg) => self
+                .compositor
+                .update(compositor_msg)
+                .map(Message::Compositor),
             Message::WindowSize(size) => {
                 self.window_size = size;
                 Task::none()
