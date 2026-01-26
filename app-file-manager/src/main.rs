@@ -30,9 +30,13 @@ impl FilesManagerApp {
         let (files_manager, fm_task) = FilesManager::new();
         (Self { files_manager }, fm_task.map(Message::FilesManager))
     }
-
-    fn update(&mut self, _message: Message) -> Task<Message> {
-        Task::none()
+ 
+    fn update(&mut self, message: Message) -> Task<Message> { 
+        match message {
+            Message::FilesManager(fm_msg) => {
+                self.files_manager.update(fm_msg).map(Message::FilesManager)
+            }
+        }
     }
 
     fn view(&self) -> iced::Element<'_, Message> {
