@@ -4,7 +4,9 @@ use iced::{
     widget::{MouseArea, button, container, image, row, text, tooltip},
 };
 
-use so_base::{ApplicationItem, ApplicationType};
+use so_base::{
+    ApplicationItem, ApplicationType, FIREFOX_ICON, STEAM_ICON, TERMINAL_ICON, USERHOME_ICON,
+};
 
 #[derive(Debug)]
 pub struct Dock {
@@ -24,30 +26,22 @@ impl Dock {
         let items = vec![
             ApplicationItem {
                 name: "Terminal".to_string(),
-                icon: image::Handle::from_bytes(
-                    include_bytes!("../../assets/images/terminal.png").as_slice(),
-                ),
+                icon: image::Handle::from_bytes(TERMINAL_ICON),
                 app_type: ApplicationType::Terminal,
             },
             ApplicationItem {
                 name: "Firefox".to_string(),
-                icon: image::Handle::from_bytes(
-                    include_bytes!("../../assets/images/firefox.png").as_slice(),
-                ),
+                icon: image::Handle::from_bytes(FIREFOX_ICON),
                 app_type: ApplicationType::FireFox,
             },
             ApplicationItem {
                 name: "Files Manager".to_string(),
-                icon: image::Handle::from_bytes(
-                    include_bytes!("../../assets/images/files.png").as_slice(),
-                ),
+                icon: image::Handle::from_bytes(USERHOME_ICON),
                 app_type: ApplicationType::FilesManager,
             },
             ApplicationItem {
                 name: "Steam".to_string(),
-                icon: image::Handle::from_bytes(
-                    include_bytes!("../../assets/images/steam.png").as_slice(),
-                ),
+                icon: image::Handle::from_bytes(STEAM_ICON),
                 app_type: ApplicationType::Steam,
             },
         ];

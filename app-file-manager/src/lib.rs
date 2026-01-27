@@ -1,6 +1,6 @@
 use iced::{
     Background, Color, Element, Length, Task,
-    widget::{column, container, scrollable, text},
+    widget::{column, container, row, scrollable, text},
 };
 
 #[derive(Debug, Clone)]
@@ -67,7 +67,7 @@ impl FilesManager {
                 .into();
         }
 
-        let file_list = column(self.files.iter().map(|file| {
+        let file_list = row(self.files.iter().map(|file| {
             let icon = match file.file_type {
                 FileType::Directory => "📁",
                 FileType::File => "📄",
