@@ -4,6 +4,7 @@ use sdl2::{
     render::Canvas, video::Window,
 };
 
+pub const LIMIT_FPS: bool = false;
 pub const FPS: i32 = 60;
 pub const MILLISECS_PER_FRAME: i32 = 1000 / FPS;
 
@@ -57,7 +58,7 @@ impl Game {
 
     fn setup(&mut self) {
         self.player_position = Vec2 { x: 10.0, y: 20.0 };
-        self.player_velocity = Vec2 { x: 1.0, y: 0.0 };
+        self.player_velocity = Vec2 { x: 100.0, y: 0.0 };
     }
 
     fn process_input(&mut self) {
@@ -76,18 +77,22 @@ impl Game {
     fn update(&mut self) {
         let sdl_context = self.sdl_context.as_ref().unwrap();
 
-        let milisecs_since_init = sdl_context.timer().unwrap().ticks() as i32;
-        let time_to_wait =
-            MILLISECS_PER_FRAME - (milisecs_since_init - self.milisecs_previous_frame);
+        if LIMIT_FPS {
+            let milisecs_since_init = sdl_context.timer().unwrap().ticks() as i32;
+            let time_to_wait =
+                MILLISECS_PER_FRAME - (milisecs_since_init - self.milisecs_previous_frame);
 
-        if time_to_wait > 0 && time_to_wait <= MILLISECS_PER_FRAME {
-            sdl_context.timer().unwrap().delay(time_to_wait as u32);
+            if time_to_wait > 0 && time_to_wait <= MILLISECS_PER_FRAME {
+                sdl_context.timer().unwrap().delay(time_to_wait as u32);
+            }
         }
+
+        let delta_time = (sdl_context.timer().unwrap().ticks() as i32 - self.milisecs_previous_frame) as f32 / 1000.0;
 
         self.milisecs_previous_frame = sdl_context.timer().unwrap().ticks() as i32;
 
-        self.player_position.x += self.player_velocity.x;
-        self.player_position.y += self.player_velocity.y;
+        self.player_position.x += self.player_velocity.x * delta_time;
+        self.player_position.y += self.player_velocity.y * delta_time;
     }
 
     fn render(&mut self) {
