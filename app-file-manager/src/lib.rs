@@ -1,6 +1,6 @@
 use iced::{
     Alignment, Background, Color, Element, Length, Padding, Task,
-    widget::{MouseArea, column, container, image, scrollable, text},
+    widget::{MouseArea, button, column, container, image, row, scrollable, space, text},
 };
 use iced_aw::Wrap;
 use so_base::{FILE_ICON, FILE_UNKNOWN_ICON, FOLDER_ICON};
@@ -63,9 +63,9 @@ impl FilesManager {
                     Ok(files) => {
                         self.files = files;
                         self.last_error = None;
+                        self.previous_dir = self.current_dir.clone();
                     }
                     Err(error) => {
-                        self.previous_dir = self.current_dir.clone();
                         self.files.clear();
                         self.last_error = Some(error);
                     }
@@ -74,8 +74,6 @@ impl FilesManager {
             }
             FilesManagerMessage::FileOpen(path, file_type) => match file_type {
                 FileType::Directory => {
-                    self.previous_dir = self.current_dir.clone();
-                    self.current_dir = path.0.clone();
                     Task::perform(read_dir(path.0), FilesManagerMessage::ReadDir)
                 }
                 _ => Task::none(),
@@ -86,7 +84,15 @@ impl FilesManager {
     pub fn view(&self) -> Element<'_, FilesManagerMessage> {
         if let Some(error) = &self.last_error {
             return container(
-                text(format!("Error: {}", error)).color(Color::from_rgb8(209, 145, 145)),
+                column![
+                    text(format!("Error: {}", error)).color(Color::from_rgb8(255, 82, 82)),
+                    button("Back").on_press(FilesManagerMessage::FileOpen(
+                        FilePath(self.previous_dir.clone()),
+                        FileType::Directory
+                    ))
+                ]
+                .spacing(8)
+                .align_x(Alignment::Center),
             )
             .center(Length::Fill)
             .into();
@@ -126,7 +132,19 @@ impl FilesManager {
         .spacing(8.0)
         .line_spacing(20.0);
 
-        let header = text(format!("Current Dir: {}", self.current_dir)).size(20);
+        let header = row![
+            text(format!("Current Dir: {}", self.current_dir)).size(20),
+            space::horizontal().width(Length::Fill),
+            button("Back").on_press(FilesManagerMessage::FileOpen(
+                FilePath(self.previous_dir.clone()),
+                FileType::Directory
+            ))
+        ]
+        .spacing(8)
+        .padding(Padding {
+            right: 20.0,
+            ..Default::default()
+        });
 
         let content = column![header, scrollable(file_list).width(Length::Fill)]
             .spacing(20)
