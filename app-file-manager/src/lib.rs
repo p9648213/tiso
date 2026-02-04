@@ -1,6 +1,6 @@
 use iced::{
     Alignment, Background, Color, Element, Length, Padding, Task,
-    widget::{MouseArea, button, column, container, image, row, scrollable, space, text},
+    widget::{MouseArea, button, column, container, image, row, scrollable, text},
 };
 use iced_aw::Wrap;
 use so_base::{FILE_ICON, FILE_UNKNOWN_ICON, FOLDER_ICON};
@@ -63,7 +63,6 @@ impl FilesManager {
                     Ok(files) => {
                         self.files = files;
                         self.last_error = None;
-                        self.previous_dir = self.current_dir.clone();
                     }
                     Err(error) => {
                         self.files.clear();
@@ -74,6 +73,15 @@ impl FilesManager {
             }
             FilesManagerMessage::FileOpen(path, file_type) => match file_type {
                 FileType::Directory => {
+                    self.current_dir = path.0.clone();
+        
+                    let path_obj = std::path::Path::new(&self.current_dir);
+                    
+                    self.previous_dir = path_obj
+                        .parent()
+                        .map(|p| p.to_string_lossy().to_string())
+                        .unwrap_or(self.current_dir.clone());
+
                     Task::perform(read_dir(path.0), FilesManagerMessage::ReadDir)
                 }
                 _ => Task::none(),
@@ -133,8 +141,10 @@ impl FilesManager {
         .line_spacing(20.0);
 
         let header = row![
-            text(format!("Current Dir: {}", self.current_dir)).size(20),
-            space::horizontal().width(Length::Fill),
+            text(format!("Current Dir: {}", self.current_dir))
+                .size(20)
+                .width(Length::Fill) 
+                .wrapping(text::Wrapping::WordOrGlyph), 
             button("Back").on_press(FilesManagerMessage::FileOpen(
                 FilePath(self.previous_dir.clone()),
                 FileType::Directory
@@ -147,7 +157,7 @@ impl FilesManager {
         });
 
         let content = column![header, scrollable(file_list).width(Length::Fill)]
-            .spacing(20)
+            .spacing(40)
             .padding(Padding {
                 top: 20.0,
                 bottom: 0.0,
